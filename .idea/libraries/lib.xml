@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="lib">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/Java-Swing-MusicPlayer-main/lib/jaudiotagger-3.0.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/Java-Swing-MusicPlayer-main/lib/jlayer-1.0.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/Java-Swing-MusicPlayer-main/lib/mp3agic-0.9.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
