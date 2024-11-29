@@ -1,3 +1,14 @@
+/*
+ *  Course: TCSS143 - Fundamentals of Object-Oriented Programming-Theory
+ *                    and Application
+ *  Names:            Colby Jenkins, Keith Smith, Kevin Michalson, Marcus Meligro
+ *  Instructor:       Wei Cai
+ *  Assignment:       Team Project
+ *  Due Date:         12/5/24
+ *
+ *  File Name:        MusicPlayer.java
+ */
+
 import javazoom.jl.player.advanced.AdvancedPlayer;
 import javazoom.jl.player.advanced.PlaybackEvent;
 import javazoom.jl.player.advanced.PlaybackListener;
@@ -5,6 +16,13 @@ import javazoom.jl.player.advanced.PlaybackListener;
 import java.io.*;
 import java.util.ArrayList;
 
+/**
+ * This file implements a MusicPlayer class that manages the playback of audio files,
+ * supporting both individual songs and playlists.
+ *
+ *
+ * @version 28 November 2024
+ */
 public class MusicPlayer extends PlaybackListener {
     // Synchronization object used for pausing and resuming playback.
     private static final Object playSignal = new Object();

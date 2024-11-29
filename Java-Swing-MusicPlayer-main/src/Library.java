@@ -1,92 +1,173 @@
+/*
+ *  Course: TCSS143 - Fundamentals of Object-Oriented Programming-Theory
+ *                    and Application
+ *  Names:            Colby Jenkins, Keith Smith, Kevin Michalson, Marcus Meligro
+ *  Instructor:       Wei Cai
+ *  Assignment:       Team Project
+ *  Due Date:         12/5/24
+ *
+ *  File Name:        Library.java
+ */
+
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
+/**
+ * Manages the collections of the songs. Provides functionality to load songs from a folder,
+ * access songs by index or title, add songs to the library, and convert the library into a
+ * format suitable for JTable.
+ *
+ * @version 28 November 2024
+ */
 public class Library {
-    // ArrayList to store the songs in the library.
-    public ArrayList<Song> songLibrary;
+    /**
+     * Stores the songs in the library.
+     */
+    public ArrayList<Song> mySongLibrary;
 
-    // Constructor that takes the folder path containing the songs.
-    public Library(String folderPath) {
-        // Initialize the songLibrary by adding songs from the specified folder.
-        songLibrary = addLibraryElements(folderPath);
+    /**
+     * Constructs a Library object by loading songs from the specified folder.
+     *
+     * @param theFolderPath the path to the folder containing the songs.
+     */
+    public Library(String theFolderPath) {
+        // Initialize the song library by adding songs from the specified folder.
+        mySongLibrary = addLibraryElements(theFolderPath);
     }
 
-    // Private helper method to add songs from a folder to the library.
-    private ArrayList<Song> addLibraryElements(String folderPath) {
-        File directory = new File(folderPath);
-        ArrayList<Song> result = new ArrayList<>();
+    /**
+     * Adds songs from the specified folder to the library.
+     *
+     * @param theFolderPath the path to the folder containing the songs.
+     * @return an ArrayList containing Song objects loaded from the folder.
+     */
+    private ArrayList<Song> addLibraryElements(String theFolderPath) {
+        File myDirectory = new File(theFolderPath);
+        ArrayList<Song> myResult = new ArrayList<>();
 
         // Check if the directory exists and is a directory.
-        if (directory.exists() && directory.isDirectory()) {
-            File[] files = directory.listFiles();
-            int fileCount;
+        if (myDirectory.exists() && myDirectory.isDirectory()) {
+            File[] myFiles = myDirectory.listFiles();
+            int myFileCount;
 
-            if (files != null) {
-                fileCount = files.length;
-                System.out.println("Number of files in the directory: " + fileCount);
+            if (myFiles != null) {
+                myFileCount = myFiles.length;
+                System.out.println("Number of files in the directory: " + myFileCount);
 
                 // Iterate through the files in the directory.
-                for (File file : files) {
+                for (File myFile : myFiles) {
                     // Create a Song object for each file and add it to the result list.
-                    Song song = new Song(file.getPath());
-                    result.add(song);
+                    Song mySong = new Song(myFile.getPath());
+                    myResult.add(mySong);
                 }
             } else {
-                fileCount = 0;
+                myFileCount = 0;
                 System.out.println("Error reading directory.");
             }
         }
-        return result;
+        return myResult;
     }
 
-    // Get a song from the library by its index.
-    public Song getSong(int index) {
-        return songLibrary.get(index);
+    /**
+     * Retrieves a song from the library by its index.
+     *
+     * @param theIndex the index of the song in the library.
+     * @return the Song object at the specified index.
+     */
+    public Song getSong(int theIndex) {
+        return mySongLibrary.get(theIndex);
     }
 
-    // Get a song from the library by its title.
-    public Song getSong(String songTitle) {
-        Song result = null;
+    /**
+     * Retrieves a song from the library by its title.
+     *
+     * @param theSongTitle the title of the song to retrieve.
+     * @return the Song object with the specified title, or null if not found.
+     */
+    public Song getSong(String theSongTitle) {
+        Song myResult = null;
 
         // Iterate through the songs and find the one with the matching title.
-        for (Song song : songLibrary) {
-            if (song.getSongTitle().equals(songTitle)) {
-                return song;
+        for (Song mySong : mySongLibrary) {
+            if (mySong.getSongTitle().equals(theSongTitle)) {
+                return mySong;
             }
         }
-        return result;
+        return myResult;
     }
 
-    // Add a song to the library.
-    public void addToLibrary(Song song) {
-        songLibrary.add(song);
+    /**
+     * Adds a song to the library.
+     *
+     * @param theSong the Song object to add to the library.
+     */
+    public void addToLibrary(Song theSong) {
+        mySongLibrary.add(theSong);
     }
 
-    // Convert the song library to a 2D String array for use in a JTable.
+    /**
+     * Converts the song library to a 2D String array for use in a JTable.
+     *
+     * @return a 2D String array containing song information (index, title, artist, genre).
+     */
     public String[][] toArray() {
-        String[][] result = new String[songLibrary.size()][4];
+        String[][] myResult = new String[mySongLibrary.size()][4];
 
         // Populate the 2D array with song information (index, title, artist, genre).
-        for (int i = 0; i < songLibrary.size(); i++) {
-            result[i][0] = i + "";
-            result[i][1] = songLibrary.get(i).getSongTitle();
-            result[i][2] = songLibrary.get(i).getSongArtist();
-            result[i][3] = songLibrary.get(i).getSongGenre();
+        for (int myIndex = 0; myIndex < mySongLibrary.size(); myIndex++) {
+            myResult[myIndex][0] = myIndex + "";
+            myResult[myIndex][1] = mySongLibrary.get(myIndex).getSongTitle();
+            myResult[myIndex][2] = mySongLibrary.get(myIndex).getSongArtist();
+            myResult[myIndex][3] = mySongLibrary.get(myIndex).getSongGenre();
         }
-        return result;
+        return myResult;
     }
 
-    // Override toString() method to provide a formatted string representation of the library contents.
+    /**
+     * Provides a formatted string representation of the library contents.
+     *
+     * @return a string containing details of the library contents.
+     */
     public String toString() {
-        String result = "\n------- Library Contents -------\n";
-        for (Song song : songLibrary) {
-            result += String.format("Title: %2s" +
-                    "\nArtist: %2s" +
-                    "\nGenre: %2s" +
-                    "\nFilePath: %2s\n\n", song.getSongTitle(), song.getSongArtist(), song.getSongGenre(), song.getFilePath());
+        String myResult = "\n------- Library Contents -------\n";
+        for (Song mySong : mySongLibrary) {
+            myResult += String.format("Title: %2s" +
+                            "\nArtist: %2s" +
+                            "\nGenre: %2s" +
+                            "\nFilePath: %2s\n\n",
+                    mySong.getSongTitle(),
+                    mySong.getSongArtist(),
+                    mySong.getSongGenre(),
+                    mySong.getFilePath());
         }
-        result += "------------- End  -------------\n";
+        myResult += "------------- End  -------------\n";
 
-        return result;
+        return myResult;
+    }
+
+    /**
+     * Sorts the library by song titles in case-insensitive order.
+     */
+    public void sortByTitle() {
+        Collections.sort(mySongLibrary,
+                Comparator.comparing(Song::getSongTitle, String.CASE_INSENSITIVE_ORDER));
+    }
+
+    /**
+     * Sorts the library by song artists in case-insensitive order.
+     */
+    public void sortByArtist() {
+        Collections.sort(mySongLibrary,
+                Comparator.comparing(Song::getSongArtist, String.CASE_INSENSITIVE_ORDER));
+    }
+
+    /**
+     * Sorts the library by song genres in case-insensitive order.
+     */
+    public void sortByGenre() {
+        Collections.sort(mySongLibrary,
+                Comparator.comparing(Song::getSongGenre, String.CASE_INSENSITIVE_ORDER));
     }
 }

@@ -1,3 +1,14 @@
+/*
+ *  Course: TCSS143 - Fundamentals of Object-Oriented Programming-Theory
+ *                    and Application
+ *  Names:            Colby Jenkins, Keith Smith, Kevin Michalson, Marcus Meligro
+ *  Instructor:       Wei Cai
+ *  Assignment:       Team Project
+ *  Due Date:         12/5/24
+ *
+ *  File Name:        MusicPlayerGUI.java
+ */
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -7,6 +18,13 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.Hashtable;
 
+/**
+ * Initializes the GUI for the music player
+ *
+ *
+ *
+ * @version 28 November 2024
+ */
 public class MusicPlayerGUI extends JFrame {
     // Color and font configurations for the GUI.
     public static final Font FONT = new Font("Dialog",Font.PLAIN,18);
@@ -15,19 +33,19 @@ public class MusicPlayerGUI extends JFrame {
     public static final Color TEXT_COLOR_SECONDARY = Color.GRAY;
 
     // The underlying MusicPlayer object responsible for audio playback.
-    private MusicPlayer musicPlayer;
+    private MusicPlayer myMusicPlayer;
 
     // JFileChooser for browsing and selecting MP3 files.
-    private JFileChooser jFileChooser;
+    private JFileChooser myJFileChooser;
 
     // Library to hold all Song objects.
-    private Library library;
+    private Library myLibrary;
 
     // GUI components for displaying song information and controlling playback.
-    private JLabel songTitle, songArtist;
-    private JPanel playbackBtns;
-    private JSlider playbackSlider;
-    private JTable libraryTable;
+    private JLabel mySongTitle, mySongArtist;
+    private JPanel myPlaybackBtns;
+    private JSlider myPlaybackSlider;
+    private JTable myLibraryTable;
 
     public MusicPlayerGUI(){
         // Calls JFrame constructor to initialize the GUI window with the title "Music Player".
@@ -52,18 +70,18 @@ public class MusicPlayerGUI extends JFrame {
         getContentPane().setBackground(FRAME_COLOR);
 
         // Initialize the MusicPlayer and JFileChooser objects.
-        musicPlayer = new MusicPlayer(this);
-        jFileChooser = new JFileChooser();
+        myMusicPlayer = new MusicPlayer(this);
+        myJFileChooser = new JFileChooser();
 
         // Set the default directory for the file chooser.
-        jFileChooser.setCurrentDirectory(new File("Java-Swing-MusicPlayer-main/src/assets"));
+        myJFileChooser.setCurrentDirectory(new File("Java-Swing-MusicPlayer-main/src/assets"));
 
         // Initialize the Library with the path to the song directory.
-        library = new Library("Java-Swing-MusicPlayer-main/src/assets/songs");
-        System.out.println(library.toString());
+        myLibrary = new Library("Java-Swing-MusicPlayer-main/src/assets/songs");
+        System.out.println(myLibrary.toString());
 
         // Filter the file chooser to display only MP3 files.
-        jFileChooser.setFileFilter(new FileNameExtensionFilter("MP3", "mp3"));
+        myJFileChooser.setFileFilter(new FileNameExtensionFilter("MP3", "mp3"));
 
         // Add the GUI components to the window.
         addGuiComponents();
@@ -71,118 +89,126 @@ public class MusicPlayerGUI extends JFrame {
 
     private void addGuiComponents() {
         // Add a main panel to hold both search and sort panels in the NORTH.
-        JPanel northPanel = new JPanel();
-        northPanel.setLayout(new BoxLayout(northPanel, BoxLayout.Y_AXIS));
-        northPanel.setBackground(null); // Set transparent background.
-        add(northPanel, BorderLayout.NORTH);
+        JPanel theNorthPanel = new JPanel();
+        theNorthPanel.setLayout(new BoxLayout(theNorthPanel, BoxLayout.Y_AXIS));
+        theNorthPanel.setBackground(null); // Set transparent background.
+        add(theNorthPanel, BorderLayout.NORTH);
 
         // Search Panel.
-        JPanel searchPanel = new JPanel();
-        searchPanel.setBackground(null); // Set transparent background.
-        northPanel.add(searchPanel);
+        JPanel theSearchPanel = new JPanel();
+        theSearchPanel.setBackground(null); // Set transparent background.
+        theNorthPanel.add(theSearchPanel);
 
-        JTextField searchBox = new JTextField(20);
-        searchPanel.add(searchBox);
+        JTextField theSearchBox = new JTextField(20);
+        theSearchPanel.add(theSearchBox);
 
-        JButton searchButton = new JButton("Search");
-        searchPanel.add(searchButton);
+        JButton theSearchButton = new JButton("Search");
+        theSearchPanel.add(theSearchButton);
 
         // Sort Panel.
-        JPanel sortPanel = new JPanel();
-        sortPanel.setBackground(null); // Set transparent background.
-        northPanel.add(sortPanel);
+        JPanel theSortPanel = new JPanel();
+        theSortPanel.setBackground(null); // Set transparent background.
+        theNorthPanel.add(theSortPanel);
 
         String[] sortOptions = {"Title", "Artist", "Genre"};
-        JComboBox<String> sortDropdown = new JComboBox<>(sortOptions);
-        sortPanel.add(sortDropdown);
+        JComboBox<String> theSortDropdown = new JComboBox<>(sortOptions);
+        theSortPanel.add(theSortDropdown);
 
-        JButton sortButton = new JButton("Sort");
-        sortButton.addActionListener(e -> {
-            String selectedOption = (String) sortDropdown.getSelectedItem();
-            // Add your sorting logic here based on selectedOption.
-            // For example:
-            // if (selectedOption.equals("Title")) { library.sortByTitle(); }
-            //library.sort();
-            //updateTable();
+        JButton theSortButton = new JButton("Sort");
+        theSortButton.addActionListener(e -> {
+            String theSelectedOption = (String) theSortDropdown.getSelectedItem();
+
+            // Perform sorting based on user selection.
+            if (theSelectedOption.equals("Title")) {
+                myLibrary.sortByTitle();
+            } else if (theSelectedOption.equals("Artist")) {
+                myLibrary.sortByArtist();
+            } else if (theSelectedOption.equals("Genre")) {
+                myLibrary.sortByGenre();
+            }
+
+            // Update the table with sorted data.
+            updateTable();
         });
-        sortPanel.add(sortButton);
+
+        theSortPanel.add(theSortButton);
 
         // Center Panel.
-        JPanel centerPanel = new JPanel();
-        centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
-        add(centerPanel, BorderLayout.CENTER);
+        JPanel theCenterPanel = new JPanel();
+        theCenterPanel.setLayout(new BoxLayout(theCenterPanel, BoxLayout.Y_AXIS));
+        add(theCenterPanel, BorderLayout.CENTER);
 
-        // Table to display the music library.
-        String[] columnNames = {"", "Title", "Artist", "Genre"};
-        String[][] tableData = library.toArray();
+        // Table to display the music myLibrary.
+        String[] theColumnNames = {"", "Title", "Artist", "Genre"};
+        String[][] theTableData = myLibrary.toArray();
 
-        libraryTable = new JTable(tableData, columnNames) {
+        myLibraryTable = new JTable(theTableData, theColumnNames) {
             @Override
-            public boolean isCellEditable(int row, int column) {
+            public boolean isCellEditable(int theRow, int column) {
                 return false; // Make table cells non-editable.
             }
         };
-        libraryTable.getTableHeader().setReorderingAllowed(false); // Prevent column reordering.
-        libraryTable.getTableHeader().setResizingAllowed(false);   // Prevent column resizing.
+        myLibraryTable.getTableHeader().setReorderingAllowed(false); // Prevent column reordering.
+        myLibraryTable.getTableHeader().setResizingAllowed(false);   // Prevent column resizing.
 
-        JScrollPane scrollPane = new JScrollPane(libraryTable);
-        libraryTable.getColumnModel().getColumn(0).setPreferredWidth(5); // Set preferred width for the first column.
-        scrollPane.setPreferredSize(new Dimension(300, 100)); // Reduced height to 100.
-        centerPanel.add(scrollPane);
+        JScrollPane theScrollPane = new JScrollPane(myLibraryTable);
+        myLibraryTable.getColumnModel().getColumn(0).setPreferredWidth(5); // Set preferred width for the first column.
+        theScrollPane.setPreferredSize(new Dimension(300, 100)); // Reduced height to 100.
+        theCenterPanel.add(theScrollPane);
 
         // Add MouseListener to handle song selection from the table.
-        libraryTable.addMouseListener(new MouseAdapter() {
+        myLibraryTable.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                int row = libraryTable.rowAtPoint(e.getPoint());
-                if (row >= 0) {
-                    String tableSelection = (String) libraryTable.getValueAt(row, 1);
-                    Song songSelection = library.getSong(tableSelection);
-                    musicPlayer.setSelectedSong(songSelection);
+                int theRow = myLibraryTable.rowAtPoint(e.getPoint());
+                if (theRow >= 0) {
+                    String theTableSelection = (String) myLibraryTable.getValueAt(theRow, 1);
+                    Song theSongSelection = myLibrary.getSong(theTableSelection);
+                    myMusicPlayer.setSelectedSong(theSongSelection);
                 }
             }
         });
 
         // Song Information Panel.
-        songTitle = new JLabel("Song Title");
-        songTitle.setFont(new Font("Dialog", Font.BOLD, 24));
-        songTitle.setForeground(TEXT_COLOR);
-        songTitle.setAlignmentX(Component.CENTER_ALIGNMENT);
+        mySongTitle = new JLabel("Song Title");
+        mySongTitle.setFont(new Font("Dialog", Font.BOLD, 24));
+        mySongTitle.setForeground(TEXT_COLOR);
+        mySongTitle.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        songArtist = new JLabel("Artist");
-        songArtist.setFont(new Font("Dialog", Font.PLAIN, 18));
-        songArtist.setForeground(TEXT_COLOR_SECONDARY);
-        songArtist.setAlignmentX(Component.CENTER_ALIGNMENT);
+        mySongArtist = new JLabel("Artist");
+        mySongArtist.setFont(new Font("Dialog", Font.PLAIN, 18));
+        mySongArtist.setForeground(TEXT_COLOR_SECONDARY);
+        mySongArtist.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         JPanel songInfoPanel = new JPanel();
         songInfoPanel.setLayout(new BoxLayout(songInfoPanel, BoxLayout.Y_AXIS));
         songInfoPanel.setOpaque(false); // Make the panel transparent.
-        songInfoPanel.add(songTitle);
-        songInfoPanel.add(songArtist);
-        centerPanel.setBackground(null); // Set transparent background.
-        centerPanel.add(songInfoPanel);
+        songInfoPanel.add(mySongTitle);
+        songInfoPanel.add(mySongArtist);
+        theCenterPanel.setBackground(null); // Set transparent background.
+        theCenterPanel.add(songInfoPanel);
 
         // Playback Slider.
-        playbackSlider = new JSlider(JSlider.HORIZONTAL, 0, 100, 0);
-        playbackSlider.setBackground(null); // Set transparent background.
-        playbackSlider.setVisible(false);
-        playbackSlider.addMouseListener(new MouseAdapter() {
+        myPlaybackSlider = new JSlider(JSlider.HORIZONTAL, 0, 100, 0);
+        myPlaybackSlider.setBackground(null); // Set transparent background.
+        myPlaybackSlider.setVisible(false);
+        myPlaybackSlider.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                musicPlayer.pauseSong(); // Pause playback when slider is pressed.
+                myMusicPlayer.pauseSong(); // Pause playback when slider is pressed.
             }
 
             @Override
             public void mouseReleased(MouseEvent e) {
-                JSlider source = (JSlider) e.getSource();
-                int frame = source.getValue();
-                musicPlayer.setCurrentFrame(frame);
-                musicPlayer.setCurrentTimeInMilli((int) (frame / (2.08 * musicPlayer.getCurrentSong().getFrameRatePerMilliseconds())));
-                musicPlayer.playCurrentSong(); // Resume playback when slider is released.
+                JSlider theSource = (JSlider) e.getSource();
+                int theFrame = theSource.getValue();
+                myMusicPlayer.setCurrentFrame(theFrame);
+                myMusicPlayer.setCurrentTimeInMilli((int) (theFrame / (2.08 * myMusicPlayer.getCurrentSong().getFrameRatePerMilliseconds())));
+                myMusicPlayer.playCurrentSong(); // Resume playback when slider is released.
                 enablePauseButtonDisablePlayButton();
             }
         });
-        centerPanel.add(playbackSlider);
+        theCenterPanel.add(myPlaybackSlider);
 
         // Add Playback Buttons to the GUI.
         addPlaybackBtns();
@@ -191,9 +217,9 @@ public class MusicPlayerGUI extends JFrame {
 
     // Method to add playback control buttons to the GUI.
     private void addPlaybackBtns(){
-        playbackBtns = new JPanel();
-        playbackBtns.setBounds(0, 435, getWidth() - 10, 80);
-        playbackBtns.setBackground(null); // Set transparent background.
+        myPlaybackBtns = new JPanel();
+        myPlaybackBtns.setBounds(0, 435, getWidth() - 10, 80);
+        myPlaybackBtns.setBackground(null); // Set transparent background.
 
         // Previous button.
         JButton prevButton = new JButton(loadImage("Java-Swing-MusicPlayer-main/src/assets/previous.png"));
@@ -202,10 +228,10 @@ public class MusicPlayerGUI extends JFrame {
         prevButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                musicPlayer.prevSong(); // Go to the previous song.
+                myMusicPlayer.prevSong(); // Go to the previous song.
             }
         });
-        playbackBtns.add(prevButton);
+        myPlaybackBtns.add(prevButton);
 
         // Play button.
         JButton playButton = new JButton(loadImage("Java-Swing-MusicPlayer-main/src/assets/play.png"));
@@ -215,10 +241,10 @@ public class MusicPlayerGUI extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 enablePauseButtonDisablePlayButton();
-                musicPlayer.playCurrentSong(); // Start or resume playback.
+                myMusicPlayer.playCurrentSong(); // Start or resume playback.
             }
         });
-        playbackBtns.add(playButton);
+        myPlaybackBtns.add(playButton);
 
         // Pause button (initially invisible).
         JButton pauseButton = new JButton(loadImage("Java-Swing-MusicPlayer-main/src/assets/pause.png"));
@@ -229,10 +255,10 @@ public class MusicPlayerGUI extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 enablePlayButtonDisablePauseButton();
-                musicPlayer.pauseSong(); // Pause playback.
+                myMusicPlayer.pauseSong(); // Pause playback.
             }
         });
-        playbackBtns.add(pauseButton);
+        myPlaybackBtns.add(pauseButton);
 
         // Next button.
         JButton nextButton = new JButton(loadImage("Java-Swing-MusicPlayer-main/src/assets/next.png"));
@@ -241,51 +267,51 @@ public class MusicPlayerGUI extends JFrame {
         nextButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                musicPlayer.nextSong(); // Go to the next song.
+                myMusicPlayer.nextSong(); // Go to the next song.
             }
         });
-        playbackBtns.add(nextButton);
+        myPlaybackBtns.add(nextButton);
 
         // Add the playback buttons panel to the bottom (SOUTH) of the BorderLayout.
-        add(playbackBtns, BorderLayout.SOUTH);
+        add(myPlaybackBtns, BorderLayout.SOUTH);
     }
 
     // Method to update the playback slider value from the MusicPlayer.
-    public void setPlaybackSliderValue(int frame){
-        playbackSlider.setValue(frame);
+    public void setPlaybackSliderValue(int theFrame){
+        myPlaybackSlider.setValue(theFrame);
     }
 
     // Method to update the song title and artist labels.
     public void updateSongTitleAndArtist(Song song){
-        songTitle.setText(song.getSongTitle());
-        songArtist.setText(song.getSongArtist());
+        mySongTitle.setText(song.getSongTitle());
+        mySongArtist.setText(song.getSongArtist());
     }
 
     // Method to update the playback slider with information from the current song.
     public void updatePlaybackSlider(Song song){
-        playbackSlider.setMaximum(song.getMp3File().getFrameCount());
+        myPlaybackSlider.setMaximum(song.getMp3File().getFrameCount());
 
         // Create labels for the beginning and end of the slider.
         Hashtable<Integer, JLabel> labelTable = new Hashtable<>();
-        JLabel labelBeginning = new JLabel("00:00");
-        labelBeginning.setFont(new Font("Dialog", Font.BOLD, 18));
-        labelBeginning.setForeground(TEXT_COLOR);
+        JLabel theLabelBeginning = new JLabel("00:00");
+        theLabelBeginning.setFont(new Font("Dialog", Font.BOLD, 18));
+        theLabelBeginning.setForeground(TEXT_COLOR);
 
-        JLabel labelEnd =  new JLabel(song.getSongLength());
-        labelEnd.setFont(new Font("Dialog", Font.BOLD, 18));
-        labelEnd.setForeground(TEXT_COLOR);
+        JLabel theLabelEnd =  new JLabel(song.getSongLength());
+        theLabelEnd.setFont(new Font("Dialog", Font.BOLD, 18));
+        theLabelEnd.setForeground(TEXT_COLOR);
 
-        labelTable.put(0, labelBeginning);
-        labelTable.put(song.getMp3File().getFrameCount(), labelEnd);
+        labelTable.put(0, theLabelBeginning);
+        labelTable.put(song.getMp3File().getFrameCount(), theLabelEnd);
 
-        playbackSlider.setLabelTable(labelTable);
-        playbackSlider.setPaintLabels(true);
+        myPlaybackSlider.setLabelTable(labelTable);
+        myPlaybackSlider.setPaintLabels(true);
     }
 
     // Method to enable the pause button and disable the play button.
     public void enablePauseButtonDisablePlayButton(){
-        JButton playButton = (JButton) playbackBtns.getComponent(1);
-        JButton pauseButton = (JButton) playbackBtns.getComponent(2);
+        JButton playButton = (JButton) myPlaybackBtns.getComponent(1);
+        JButton pauseButton = (JButton) myPlaybackBtns.getComponent(2);
         playButton.setVisible(false);
         playButton.setEnabled(false);
         pauseButton.setVisible(true);
@@ -294,8 +320,8 @@ public class MusicPlayerGUI extends JFrame {
 
     // Method to enable the play button and disable the pause button.
     public void enablePlayButtonDisablePauseButton(){
-        JButton playButton = (JButton) playbackBtns.getComponent(1);
-        JButton pauseButton = (JButton) playbackBtns.getComponent(2);
+        JButton playButton = (JButton) myPlaybackBtns.getComponent(1);
+        JButton pauseButton = (JButton) myPlaybackBtns.getComponent(2);
         playButton.setVisible(true);
         playButton.setEnabled(true);
         pauseButton.setVisible(false);
@@ -311,5 +337,21 @@ public class MusicPlayerGUI extends JFrame {
             e.printStackTrace();
         }
         return null;
+    }
+
+    private void updateTable() {
+        String[][] theTableData = myLibrary.toArray();
+        String[] theColumnNames = {"", "Title", "Artist", "Genre"};
+
+        // Create a new TableModel and update the JTable.
+        myLibraryTable.setModel(new javax.swing.table.DefaultTableModel(theTableData, theColumnNames) {
+            @Override
+            public boolean isCellEditable(int theRow, int column) {
+                return false;
+            }
+        });
+
+        // Adjust column widths.
+        myLibraryTable.getColumnModel().getColumn(0).setPreferredWidth(5);
     }
 }

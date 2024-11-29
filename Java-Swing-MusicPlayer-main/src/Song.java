@@ -1,3 +1,14 @@
+/*
+ *  Course:          TCSS143 - Fundamentals of Object-Oriented Programming-Theory
+ *                   and Application
+ *  Names:           Colby Jenkins, Keith Smith, Kevin Michalson, Marcus Meligro
+ *  Instructor:      Wei Cai
+ *  Assignment:      Team Project
+ *  Due Date:        12/5/24
+ *
+ *  File Name:       Song.java
+ */
+
 import com.mpatric.mp3agic.Mp3File;
 import org.jaudiotagger.audio.AudioFile;
 import org.jaudiotagger.audio.AudioFileIO;
@@ -7,90 +18,146 @@ import org.jaudiotagger.tag.Tag;
 import java.io.File;
 import java.util.HashMap;
 
-// Class representing an MP3 song.
+/**
+ * Represents an MP3 song with metadata including title, artist, genre, and length.
+ * Provides methods for retrieving song details and file information.
+ *
+ * @version 28 November 2024
+ */
 public class Song {
-    // HashMap to store song metadata (title, artist, length, genre, file path).
-    private HashMap<String, String> songData = new HashMap<>();
 
-    // Mp3File object from the mp3agic library for accessing MP3 file information.
-    private Mp3File mp3File;
+    /**
+     * Stores metadata of the song (title, artist, length, genre, and file path).
+     */
+    private HashMap<String, String> mySongData = new HashMap<>();
 
-    // Frame rate per millisecond, calculated from the MP3 file data.
-    private double frameRatePerMilliseconds;
+    /**
+     * Object for accessing MP3 file information using the mp3agic library.
+     */
+    private Mp3File myMp3File;
 
-    // Constructor that takes the file path of the MP3 file.
-    public Song(String filePath){
-        // Initialize string references for clarity (though not strictly necessary).
-        String songTitle, songArtist, songLength, songGenre;
-        songTitle = "songTitle";
-        songArtist = "songArtist";
-        songLength = "songLength";
-        songGenre = "songGenre";
+    /**
+     * Frame rate per millisecond, calculated from the MP3 file data.
+     */
+    private double myFrameRatePerMilliseconds;
 
-        // Store the file path in the songData HashMap.
-        songData.put("filePath", filePath);
+    /**
+     * Constructs a Song object and extracts metadata from the given MP3 file path.
+     *
+     * @param theFilePath the file path of the MP3 file.
+     */
+    public Song(String theFilePath) {
+        // Initialize keys for metadata.
+        String songTitleKey = "songTitle";
+        String songArtistKey = "songArtist";
+        String songLengthKey = "songLength";
+        String songGenreKey = "songGenre";
 
-        try{
+        // Store the file path in the song data map.
+        mySongData.put("filePath", theFilePath);
+
+        try {
             // Create an Mp3File object from the file path.
-            mp3File = new Mp3File(filePath);
+            myMp3File = new Mp3File(theFilePath);
 
             // Calculate the frame rate per millisecond.
-            frameRatePerMilliseconds = (double) mp3File.getFrameCount() / mp3File.getLengthInMilliseconds();
+            myFrameRatePerMilliseconds =
+                    (double) myMp3File.getFrameCount() / myMp3File.getLengthInMilliseconds();
 
             // Convert the song length to a formatted string and store it.
-            songData.put("songLength", convertToSongLengthFormat());
+            mySongData.put(songLengthKey, convertToSongLengthFormat());
 
             // Use jaudiotagger to read metadata from the MP3 file.
-            AudioFile audioFile = AudioFileIO.read(new File(filePath));
-            Tag tag =  audioFile.getTag();
+            AudioFile audioFile = AudioFileIO.read(new File(theFilePath));
+            Tag tag = audioFile.getTag();
 
-            if(tag != null){
-                // Store the song title, artist, and genre from the metadata.
-                songData.put("songTitle", tag.getFirst(FieldKey.TITLE));
-                songData.put("songArtist", tag.getFirst(FieldKey.ARTIST));
-                songData.put("songGenre",tag.getFirst(FieldKey.GENRE));
-            }else{
-                // If metadata is not found, set default values.
-                songData.put(songTitle,"N/A");
-                songData.put(songArtist,"N/A");
-                songData.put(songGenre, "N/A"); // It's good to have a default for genre as well.
+            if (tag != null) {
+                // Store song title, artist, and genre from metadata.
+                mySongData.put(songTitleKey, tag.getFirst(FieldKey.TITLE));
+                mySongData.put(songArtistKey, tag.getFirst(FieldKey.ARTIST));
+                mySongData.put(songGenreKey, tag.getFirst(FieldKey.GENRE));
+            } else {
+                // Default values if metadata is not found.
+                mySongData.put(songTitleKey, "N/A");
+                mySongData.put(songArtistKey, "N/A");
+                mySongData.put(songGenreKey, "N/A");
             }
-        }catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    // Private helper method to convert the song length to a formatted string (mm:ss).
-    private String convertToSongLengthFormat(){
-        long minutes = mp3File.getLengthInSeconds() / 60;
-        long seconds = mp3File.getLengthInSeconds() % 60;
-        String formattedTime = String.format("%02d:%02d", minutes, seconds);
-
-        return formattedTime;
+    /**
+     * Converts the song length to a formatted string (mm:ss).
+     *
+     * @return the formatted song length as a string.
+     */
+    private String convertToSongLengthFormat() {
+        long minutes = myMp3File.getLengthInSeconds() / 60;
+        long seconds = myMp3File.getLengthInSeconds() % 60;
+        return String.format("%02d:%02d", minutes, seconds);
     }
 
-    // Getters for the song data.
+    /**
+     * Retrieves the title of the song.
+     *
+     * @return the song title.
+     */
     public String getSongTitle() {
-        return songData.get("songTitle");
+        return mySongData.get("songTitle");
     }
 
+    /**
+     * Retrieves the artist of the song.
+     *
+     * @return the song artist.
+     */
     public String getSongArtist() {
-        return songData.get("songArtist");
+        return mySongData.get("songArtist");
     }
 
+    /**
+     * Retrieves the length of the song in mm:ss format.
+     *
+     * @return the song length.
+     */
     public String getSongLength() {
-        return songData.get("songLength");
+        return mySongData.get("songLength");
     }
 
+    /**
+     * Retrieves the genre of the song.
+     *
+     * @return the song genre.
+     */
     public String getSongGenre() {
-        return songData.get("songGenre");
+        return mySongData.get("songGenre");
     }
 
+    /**
+     * Retrieves the file path of the song.
+     *
+     * @return the file path of the song.
+     */
     public String getFilePath() {
-        return songData.get("filePath");
+        return mySongData.get("filePath");
     }
 
-    public Mp3File getMp3File(){return mp3File;}
+    /**
+     * Retrieves the Mp3File object for the song.
+     *
+     * @return the Mp3File object.
+     */
+    public Mp3File getMp3File() {
+        return myMp3File;
+    }
 
-    public double getFrameRatePerMilliseconds(){return frameRatePerMilliseconds;}
+    /**
+     * Retrieves the frame rate per millisecond of the song.
+     *
+     * @return the frame rate per millisecond.
+     */
+    public double getFrameRatePerMilliseconds() {
+        return myFrameRatePerMilliseconds;
+    }
 }
