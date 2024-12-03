@@ -170,4 +170,73 @@ public class Library {
         Collections.sort(mySongLibrary,
                 Comparator.comparing(Song::getSongGenre, String.CASE_INSENSITIVE_ORDER));
     }
+    /**
+     * Searches the song library for songs that match the given search term.
+     * Matches are scored based on the relevance to the song's title, artist, and genre.
+     *
+     * @param searchTerm The term to search for in the song library.
+     * @return A list of songs sorted by relevance score, with the most relevant first.
+     */
+    public ArrayList<Song> searchSongs(String searchTerm) {
+        ArrayList<Song> searchResults = new ArrayList<>();
+        HashMap<Song, Integer> matchScores = new HashMap<>();
+
+
+        // Normalize the search term for case-insensitive matching.
+        searchTerm = searchTerm.toLowerCase();
+
+
+        // Score each song based on matches with the search term.
+        for (Song song : mySongLibrary) {
+            int score = 0;
+
+
+            // Check for matches in the song title (highest weight).
+            if (song.getSongTitle().toLowerCase().contains(searchTerm)) {
+                score += 100; // Base score for a title match.
+                if (song.getSongTitle().toLowerCase().startsWith(searchTerm)) {
+                    score += 50; // Bonus for matches starting with the term.
+                }
+            }
+
+
+            // Check for matches in the artist name.
+            if (song.getSongArtist().toLowerCase().contains(searchTerm)) {
+                score += 75; // Base score for an artist match.
+                if (song.getSongArtist().toLowerCase().startsWith(searchTerm)) {
+                    score += 25; // Bonus for matches starting with the term.
+                }
+            }
+
+
+            // Check for matches in the genre.
+            if (song.getSongGenre().toLowerCase().contains(searchTerm)) {
+                score += 50; // Base score for a genre match.
+            }
+
+
+            // Add to the match scores if the song has a positive score.
+            if (score > 0) {
+                matchScores.put(song, score);
+            }
+        }
+
+
+        // Collect all matched songs into the results list.
+        searchResults.addAll(matchScores.keySet());
+
+
+        // Sort the results by score in descending order.
+        searchResults.sort(new Comparator<Song>() {
+            @Override
+            public int compare(Song s1, Song s2) {
+                return matchScores.get(s2).compareTo(matchScores.get(s1));
+            }
+        });
+
+
+        return searchResults;
+    }
+
+
 }
