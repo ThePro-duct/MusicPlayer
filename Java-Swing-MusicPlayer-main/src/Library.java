@@ -10,9 +10,7 @@
  */
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
+import java.util.*;
 
 /**
  * Manages the collections of the songs. Provides functionality to load songs from a folder,
@@ -25,7 +23,7 @@ public class Library {
     /**
      * Stores the songs in the library.
      */
-    public ArrayList<Song> mySongLibrary;
+    public ArrayList<Song> mySongLibrary, updatedSongLibrary;
 
     /**
      * Constructs a Library object by loading songs from the specified folder.
@@ -35,6 +33,8 @@ public class Library {
     public Library(String theFolderPath) {
         // Initialize the song library by adding songs from the specified folder.
         mySongLibrary = addLibraryElements(theFolderPath);
+        updatedSongLibrary = mySongLibrary;
+
     }
 
     /**
@@ -116,14 +116,28 @@ public class Library {
         String[][] myResult = new String[mySongLibrary.size()][4];
 
         // Populate the 2D array with song information (index, title, artist, genre).
-        for (int myIndex = 0; myIndex < mySongLibrary.size(); myIndex++) {
-            myResult[myIndex][0] = myIndex + 1 +"";
-            myResult[myIndex][1] = mySongLibrary.get(myIndex).getSongTitle();
-            myResult[myIndex][2] = mySongLibrary.get(myIndex).getSongArtist();
-            myResult[myIndex][3] = mySongLibrary.get(myIndex).getSongGenre();
+        for (int i = 0; i < mySongLibrary.size(); i++) {
+            myResult[i][0] = i + 1 + "";
+            myResult[i][1] = mySongLibrary.get(i).getSongTitle();
+            myResult[i][2] = mySongLibrary.get(i).getSongArtist();
+            myResult[i][3] = mySongLibrary.get(i).getSongGenre();
         }
         return myResult;
     }
+
+    public String[][] toArray(boolean wasSearched) {
+        String[][] myResult = new String[updatedSongLibrary.size()][4];
+
+        // Populate the 2D array with song information (index, title, artist, genre).
+        for (int i = 0; i < updatedSongLibrary.size(); i++) {
+            myResult[i][0] = i + 1 + "";
+            myResult[i][1] = updatedSongLibrary.get(i).getSongTitle();
+            myResult[i][2] = updatedSongLibrary.get(i).getSongArtist();
+            myResult[i][3] = updatedSongLibrary.get(i).getSongGenre();
+        }
+        return myResult;
+    }
+
 
     /**
      * Provides a formatted string representation of the library contents.
@@ -150,26 +164,44 @@ public class Library {
     /**
      * Sorts the library by song titles in case-insensitive order.
      */
-    public void sortByTitle() {
-        Collections.sort(mySongLibrary,
-                Comparator.comparing(Song::getSongTitle, String.CASE_INSENSITIVE_ORDER));
+
+
+    public void sortByTitle(boolean wasSearched) {
+        if(wasSearched){
+            Collections.sort(updatedSongLibrary,
+                    Comparator.comparing(Song::getSongTitle, String.CASE_INSENSITIVE_ORDER));
+        }else{
+            Collections.sort(mySongLibrary,
+                    Comparator.comparing(Song::getSongTitle, String.CASE_INSENSITIVE_ORDER));
+        }
     }
 
     /**
      * Sorts the library by song artists in case-insensitive order.
      */
-    public void sortByArtist() {
-        Collections.sort(mySongLibrary,
-                Comparator.comparing(Song::getSongArtist, String.CASE_INSENSITIVE_ORDER));
+    public void sortByArtist(boolean wasSearched) {
+        if(wasSearched){
+            Collections.sort(updatedSongLibrary,
+                    Comparator.comparing(Song::getSongArtist, String.CASE_INSENSITIVE_ORDER));
+        }else{
+            Collections.sort(mySongLibrary,
+                    Comparator.comparing(Song::getSongArtist, String.CASE_INSENSITIVE_ORDER));
+        }
     }
 
     /**
      * Sorts the library by song genres in case-insensitive order.
      */
-    public void sortByGenre() {
-        Collections.sort(mySongLibrary,
-                Comparator.comparing(Song::getSongGenre, String.CASE_INSENSITIVE_ORDER));
+    public void sortByGenre(boolean wasSearched) {
+        if(wasSearched){
+            Collections.sort(updatedSongLibrary,
+                    Comparator.comparing(Song::getSongGenre, String.CASE_INSENSITIVE_ORDER));
+        }else{
+            Collections.sort(mySongLibrary,
+                    Comparator.comparing(Song::getSongGenre, String.CASE_INSENSITIVE_ORDER));
+        }
     }
+
     /**
      * Searches the song library for songs that match the given search term.
      * Matches are scored based on the relevance to the song's title, artist, and genre.
@@ -177,7 +209,7 @@ public class Library {
      * @param searchTerm The term to search for in the song library.
      * @return A list of songs sorted by relevance score, with the most relevant first.
      */
-    public ArrayList<Song> searchSongs(String searchTerm) {
+    public ArrayList<Song> searchOrder(String searchTerm) {
         ArrayList<Song> searchResults = new ArrayList<>();
         HashMap<Song, Integer> matchScores = new HashMap<>();
 
@@ -233,9 +265,11 @@ public class Library {
                 return matchScores.get(s2).compareTo(matchScores.get(s1));
             }
         });
-
-
-        return searchResults;
+//        for (Song song: searchResults){
+//            System.out.println(song.toString());
+//        }
+        this.updatedSongLibrary = searchResults;
+        return  searchResults ;
     }
 
 
