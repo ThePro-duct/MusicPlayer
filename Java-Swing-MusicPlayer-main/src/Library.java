@@ -117,7 +117,7 @@ public class Library {
 
         // Populate the 2D array with song information (index, title, artist, genre).
         for (int myIndex = 0; myIndex < mySongLibrary.size(); myIndex++) {
-            myResult[myIndex][0] = myIndex + "";
+            myResult[myIndex][0] = myIndex + 1 +"";
             myResult[myIndex][1] = mySongLibrary.get(myIndex).getSongTitle();
             myResult[myIndex][2] = mySongLibrary.get(myIndex).getSongArtist();
             myResult[myIndex][3] = mySongLibrary.get(myIndex).getSongGenre();
