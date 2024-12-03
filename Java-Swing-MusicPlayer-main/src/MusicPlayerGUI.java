@@ -16,6 +16,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Hashtable;
 
 /**
@@ -32,6 +33,7 @@ public class MusicPlayerGUI extends JFrame {
     public static final Color TEXT_COLOR = Color.WHITE;
     public static final Color TEXT_COLOR_SECONDARY = Color.GRAY;
 
+    private boolean wasSearched;
     // The underlying MusicPlayer object responsible for audio playback.
     private MusicPlayer myMusicPlayer;
 
@@ -42,7 +44,7 @@ public class MusicPlayerGUI extends JFrame {
     private Library myLibrary;
 
     // GUI components for displaying song information and controlling playback.
-    private JLabel mySongTitle, mySongArtist;
+    private JLabel mySongTitle, mySongArtist, myTableTitle;
     private JPanel myPlaybackBtns;
     private JSlider myPlaybackSlider;
     private JTable myLibraryTable;
@@ -68,6 +70,8 @@ public class MusicPlayerGUI extends JFrame {
 
         // Set the background color of the content pane.
         getContentPane().setBackground(FRAME_COLOR);
+
+        setIconImage(loadImage("Java-Swing-MusicPlayer-main/src/assets/icon.png").getImage());
 
         // Initialize the MusicPlayer and JFileChooser objects.
         myMusicPlayer = new MusicPlayer(this);
@@ -103,35 +107,71 @@ public class MusicPlayerGUI extends JFrame {
         theSearchPanel.add(theSearchBox);
 
         JButton theSearchButton = new JButton("Search");
-        theSearchPanel.add(theSearchButton);
-
-        // Sort Panel.
-        JPanel theSortPanel = new JPanel();
-        theSortPanel.setBackground(null); // Set transparent background.
-        theNorthPanel.add(theSortPanel);
-
-        String[] sortOptions = {"Title", "Artist", "Genre"};
-        JComboBox<String> theSortDropdown = new JComboBox<>(sortOptions);
-        theSortPanel.add(theSortDropdown);
-
-        JButton theSortButton = new JButton("Sort");
-        theSortButton.addActionListener(e -> {
-            String theSelectedOption = (String) theSortDropdown.getSelectedItem();
-
-            // Perform sorting based on user selection.
-            if (theSelectedOption.equals("Title")) {
-                myLibrary.sortByTitle();
-            } else if (theSelectedOption.equals("Artist")) {
-                myLibrary.sortByArtist();
-            } else if (theSelectedOption.equals("Genre")) {
-                myLibrary.sortByGenre();
+        theSearchButton.addActionListener(e -> {
+            if(theSearchBox.getText() != null && !(theSearchBox.getText().equals(""))){
+                wasSearched = true;
+                ArrayList<Song> searchTable = myLibrary.searchOrder(theSearchBox.getText());
+                updateTable(searchTable);
+            }else{
+                wasSearched = false;
+                updateTable();
             }
 
-            // Update the table with sorted data.
-            updateTable();
         });
+        theSearchPanel.add(theSearchButton);
 
-        theSortPanel.add(theSortButton);
+
+        // Create a JMenuBar
+        JMenuBar menuBar = new JMenuBar();
+        setJMenuBar(menuBar); // Add the menu bar to the frame
+
+
+
+        // --- Sort Submenu ---
+        JMenu fileMenu = new JMenu("File");
+        menuBar.add(fileMenu);
+
+        JMenu sortMenu = new JMenu("Sort");
+        menuBar.add(sortMenu);
+
+        // Sort options (using ActionListeners for brevity)
+        JMenuItem titleSortItem = new JMenuItem("Title");
+        titleSortItem.addActionListener(e -> {
+            myLibrary.sortByTitle(wasSearched);
+            updateTable(wasSearched);
+        });
+        sortMenu.add(titleSortItem);
+
+        JMenuItem artistSortItem = new JMenuItem("Artist");
+        artistSortItem.addActionListener(e -> {
+            myLibrary.sortByArtist(wasSearched);
+            updateTable(wasSearched);
+        });
+        sortMenu.add(artistSortItem);
+
+        JMenuItem genreSortItem = new JMenuItem("Genre");
+        genreSortItem.addActionListener(e -> {
+            myLibrary.sortByGenre(wasSearched);
+            updateTable(wasSearched);
+        });
+        sortMenu.add(genreSortItem);
+
+        // --- Playlist Submenu ---
+        JMenu playlistMenu = new JMenu("Playlist");
+        menuBar.add(playlistMenu);
+
+        JMenuItem createPlaylistItem = new JMenuItem("Create Playlist");
+        createPlaylistItem.addActionListener(e -> {
+            // Add your create playlist logic here
+        });
+        playlistMenu.add(createPlaylistItem);
+
+        JMenuItem loadPlaylistItem = new JMenuItem("Load Playlist");
+        loadPlaylistItem.addActionListener(e -> {
+            // Add your load playlist logic here
+        });
+        playlistMenu.add(loadPlaylistItem);
+
 
         // Center Panel.
         JPanel theCenterPanel = new JPanel();
@@ -139,6 +179,13 @@ public class MusicPlayerGUI extends JFrame {
         add(theCenterPanel, BorderLayout.CENTER);
 
         // Table to display the music myLibrary.
+        myTableTitle = new JLabel("Library");
+        myTableTitle.setFont(new Font("Dialog", Font.BOLD, 24));
+        myTableTitle.setForeground(TEXT_COLOR);
+        myTableTitle.setHorizontalAlignment(JLabel.LEFT); // Left align the label
+        myTableTitle.setAlignmentX(Component.CENTER_ALIGNMENT);
+        theCenterPanel.add(myTableTitle);
+
         String[] theColumnNames = {"", "Title", "Artist", "Genre"};
         String[][] theTableData = myLibrary.toArray();
 
@@ -334,7 +381,7 @@ public class MusicPlayerGUI extends JFrame {
             BufferedImage image = ImageIO.read(new File(imagePath));
             return new ImageIcon(image);
         }catch(Exception e){
-            e.printStackTrace();
+            JOptionPane.showMessageDialog(null,"Error: Could not load image.","Error",JOptionPane.ERROR_MESSAGE);
         }
         return null;
     }
@@ -345,6 +392,46 @@ public class MusicPlayerGUI extends JFrame {
 
         // Create a new TableModel and update the JTable.
         myLibraryTable.setModel(new javax.swing.table.DefaultTableModel(theTableData, theColumnNames) {
+            @Override
+            public boolean isCellEditable(int theRow, int column) {
+                return false;
+            }
+        });
+
+        // Adjust column widths.
+        myLibraryTable.getColumnModel().getColumn(0).setPreferredWidth(5);
+    }
+
+    private void updateTable(boolean wasSearched) {
+        String[][] theTableData = myLibrary.toArray(wasSearched);
+        String[] theColumnNames = {"", "Title", "Artist", "Genre"};
+
+        // Create a new TableModel and update the JTable.
+        myLibraryTable.setModel(new javax.swing.table.DefaultTableModel(theTableData, theColumnNames) {
+            @Override
+            public boolean isCellEditable(int theRow, int column) {
+                return false;
+            }
+        });
+
+        // Adjust column widths.
+        myLibraryTable.getColumnModel().getColumn(0).setPreferredWidth(5);
+    }
+
+    private void updateTable(ArrayList<Song> songList) {
+        String[][] newTable = new String[songList.size()][4];
+
+        for (int i = 0; i < songList.size(); i++) {
+            newTable[i][0] = i + 1 + "";
+            newTable[i][1] = songList.get(i).getSongTitle();
+            newTable[i][2] = songList.get(i).getSongArtist();
+            newTable[i][3] = songList.get(i).getSongGenre();
+        }
+
+        String[] theColumnNames = {"", "Title", "Artist", "Genre"};
+
+// Create a new TableModel and update the JTable.
+        myLibraryTable.setModel(new javax.swing.table.DefaultTableModel(newTable, theColumnNames) {
             @Override
             public boolean isCellEditable(int theRow, int column) {
                 return false;

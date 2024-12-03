@@ -168,4 +168,20 @@ public class Song {
     public double getFrameRatePerMilliseconds() {
         return myFrameRatePerMilliseconds;
     }
+
+    @Override
+    public String toString() {
+        String myResult = "";
+
+        myResult += String.format("Title: %2s" +
+                        "\nArtist: %2s" +
+                        "\nGenre: %2s" +
+                        "\nFilePath: %2s\n\n",
+                this.getSongTitle(),
+                this.getSongArtist(),
+                this.getSongGenre(),
+                this.getFilePath());
+
+        return myResult;
+    }
 }
