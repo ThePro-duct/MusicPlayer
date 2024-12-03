@@ -77,11 +77,17 @@ public class Song {
                 mySongData.put(songTitleKey, tag.getFirst(FieldKey.TITLE));
                 mySongData.put(songArtistKey, tag.getFirst(FieldKey.ARTIST));
                 mySongData.put(songGenreKey, tag.getFirst(FieldKey.GENRE));
+
+                // Debug statement to print the genre
+//                System.out.println("DEBUG: Genre for song '" + tag.getFirst(FieldKey.TITLE) + "' is: " + tag.getFirst(FieldKey.GENRE));
             } else {
                 // Default values if metadata is not found.
                 mySongData.put(songTitleKey, "N/A");
                 mySongData.put(songArtistKey, "N/A");
                 mySongData.put(songGenreKey, "N/A");
+
+                // Log missing genre info
+                System.out.println("DEBUG: No metadata found for file: " + theFilePath);
             }
         } catch (Exception e) {
             System.out.println("ERROR: Input Files Not found");
