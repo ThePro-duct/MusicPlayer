@@ -15,6 +15,7 @@ import org.jaudiotagger.audio.AudioFileIO;
 import org.jaudiotagger.tag.FieldKey;
 import org.jaudiotagger.tag.Tag;
 
+import javax.swing.*;
 import java.io.File;
 import java.util.HashMap;
 
@@ -83,7 +84,8 @@ public class Song {
                 mySongData.put(songGenreKey, "N/A");
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println("ERROR: Input Files Not found");
+            JOptionPane.showMessageDialog(null, "Error loading song data: " + e.getMessage(),"Error" ,JOptionPane.ERROR_MESSAGE);
         }
     }
 
