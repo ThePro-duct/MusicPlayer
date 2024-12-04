@@ -9,7 +9,9 @@
  *  File Name:        Library.java
  */
 
+import javax.swing.*;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.*;
 
 /**
@@ -36,6 +38,32 @@ public class Library {
         updatedSongLibrary = mySongLibrary;
 
     }
+
+    public Library(String playlistName,String playlistFilePath) {
+    mySongLibrary = addPlaylistElements(playlistFilePath);
+    updatedSongLibrary = mySongLibrary;
+    }
+    public ArrayList<Song> addPlaylistElements(String filePath){
+        Scanner playlistFile = null;
+
+        try{
+            playlistFile = new Scanner(new File(filePath));
+        } catch (FileNotFoundException e) {
+            JOptionPane.showMessageDialog(null,"Error loading playlist","Error",JOptionPane.ERROR_MESSAGE);
+        }
+
+        ArrayList<Song> newLibrary = new ArrayList<>();
+
+        while(playlistFile.hasNextLine()) {
+            Song song = new Song(playlistFile.nextLine());
+            newLibrary.add(song);
+        }
+
+       return newLibrary;
+
+    }
+
+
 
     /**
      * Adds songs from the specified folder to the library.
@@ -69,6 +97,7 @@ public class Library {
         }
         return myResult;
     }
+
 
     /**
      * Retrieves a song from the library by its index.
@@ -265,9 +294,7 @@ public class Library {
                 return matchScores.get(s2).compareTo(matchScores.get(s1));
             }
         });
-//        for (Song song: searchResults){
-//            System.out.println(song.toString());
-//        }
+
         this.updatedSongLibrary = searchResults;
         return  searchResults ;
     }
