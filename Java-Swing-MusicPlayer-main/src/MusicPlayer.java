@@ -129,6 +129,23 @@ public class MusicPlayer extends PlaybackListener {
         }
     }
 
+    public void loadPlaylist(ArrayList<Song> playlist){
+        // Start playing the first song in the playlist.
+        if(playlist.size() > 0){
+            musicPlayerGUI.setPlaybackSliderValue(0);
+            currentTimeInMilli = 0;
+            currentSong = playlist.get(0);
+            currentFrame = 0;
+
+            // Update the GUI.
+            musicPlayerGUI.enablePauseButtonDisablePlayButton();
+            musicPlayerGUI.updateSongTitleAndArtist(currentSong);
+            musicPlayerGUI.updatePlaybackSlider(currentSong);
+
+            playCurrentSong();
+        }
+    }
+
     // Pauses the currently playing song.
     public void pauseSong(){
         if(advancedPlayer != null){
