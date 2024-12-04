@@ -131,6 +131,18 @@ public class MusicPlayerGUI extends JFrame {
         JMenu fileMenu = new JMenu("File");
         menuBar.add(fileMenu);
 
+        JMenuItem returnToLibrary = new JMenuItem("Return to Library");
+        returnToLibrary.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                myMusicPlayer.pauseSong();
+                updateTable();
+                myTableTitle.setText("Library");
+
+            }
+        });
+        fileMenu.add(returnToLibrary);
+
         JMenu sortMenu = new JMenu("Sort");
         menuBar.add(sortMenu);
 
@@ -189,6 +201,8 @@ public class MusicPlayerGUI extends JFrame {
 
                 // Load the playlist and update the table
                 Library newLibrary = new Library("Playlist Name",playlistFile.toString());
+                myTableTitle.setText(playlistFile.getName().substring(0,playlistFile.getName().indexOf(".")));
+
                 myMusicPlayer.loadPlaylist(playlistFile);
                 updateTable(newLibrary.mySongLibrary); // Assuming getCurrentSong returns the first song of the playlist
             }
@@ -414,6 +428,7 @@ public class MusicPlayerGUI extends JFrame {
         String[][] theTableData = myLibrary.toArray();
         updateTable(theTableData);
         currentSongList = theTableData;
+        myMusicPlayer.loadPlaylist(myLibrary.mySongLibrary);
     }
 
 
@@ -426,6 +441,7 @@ public class MusicPlayerGUI extends JFrame {
 
     // Update the table with a specific list of songs
     private void updateTable(ArrayList<Song> songList) {
+
         String[][] theTableData = new String[songList.size()][4];
         for (int i = 0; i < songList.size(); i++) {theTableData[i][0] = i + 1 + "";
             theTableData[i][1] = songList.get(i).getSongTitle();
