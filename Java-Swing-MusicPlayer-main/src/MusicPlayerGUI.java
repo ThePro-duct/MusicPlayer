@@ -33,7 +33,7 @@ public class MusicPlayerGUI extends JFrame {
     public static final Color TEXT_COLOR = Color.WHITE;
     public static final Color TEXT_COLOR_SECONDARY = Color.GRAY;
 
-    private boolean wasSearched;
+    private boolean wasSearched = false;
     // The underlying MusicPlayer object responsible for audio playback.
     private MusicPlayer myMusicPlayer;
 
@@ -42,6 +42,7 @@ public class MusicPlayerGUI extends JFrame {
 
     // Library to hold all Song objects.
     private Library myLibrary;
+    private String[][] currentSongList;
 
     // GUI components for displaying song information and controlling playback.
     private JLabel mySongTitle, mySongArtist, myTableTitle;
@@ -82,7 +83,6 @@ public class MusicPlayerGUI extends JFrame {
 
         // Initialize the Library with the path to the song directory.
         myLibrary = new Library("Java-Swing-MusicPlayer-main/src/assets/songs");
-        System.out.println(myLibrary.toString());
 
         // Filter the file chooser to display only MP3 files.
         myJFileChooser.setFileFilter(new FileNameExtensionFilter("MP3", "mp3"));
@@ -161,14 +161,37 @@ public class MusicPlayerGUI extends JFrame {
         menuBar.add(playlistMenu);
 
         JMenuItem createPlaylistItem = new JMenuItem("Create Playlist");
-        createPlaylistItem.addActionListener(e -> {
-            // Add your create playlist logic here
+        createPlaylistItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                if(wasSearched){
+                    PlaylistDialogBox playlistBox = new PlaylistDialogBox(myLibrary.updatedSongLibrary, MusicPlayerGUI.this);
+                    playlistBox.setVisible(true);
+                }else{
+                    PlaylistDialogBox playlistBox = new PlaylistDialogBox(myLibrary.mySongLibrary, MusicPlayerGUI.this);
+                    playlistBox.setVisible(true);
+                }
+            }
         });
         playlistMenu.add(createPlaylistItem);
 
         JMenuItem loadPlaylistItem = new JMenuItem("Load Playlist");
         loadPlaylistItem.addActionListener(e -> {
-            // Add your load playlist logic here
+            JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setDialogTitle("Load Playlist");
+            fileChooser.setCurrentDirectory(new File("Java-Swing-MusicPlayer-main/src/assets/playlist"));
+
+            int userSelection = fileChooser.showOpenDialog(MusicPlayerGUI.this);
+            if (userSelection == JFileChooser.APPROVE_OPTION) {
+                // Get the selected file
+                File playlistFile = fileChooser.getSelectedFile();
+
+                // Load the playlist and update the table
+                Library newLibrary = new Library("Playlist Name",playlistFile.toString());
+                myMusicPlayer.loadPlaylist(playlistFile);
+                updateTable(newLibrary.mySongLibrary); // Assuming getCurrentSong returns the first song of the playlist
+            }
         });
         playlistMenu.add(loadPlaylistItem);
 
@@ -386,52 +409,39 @@ public class MusicPlayerGUI extends JFrame {
         return null;
     }
 
+    // Update the table with the current library
     private void updateTable() {
         String[][] theTableData = myLibrary.toArray();
-        String[] theColumnNames = {"", "Title", "Artist", "Genre"};
-
-        // Create a new TableModel and update the JTable.
-        myLibraryTable.setModel(new javax.swing.table.DefaultTableModel(theTableData, theColumnNames) {
-            @Override
-            public boolean isCellEditable(int theRow, int column) {
-                return false;
-            }
-        });
-
-        // Adjust column widths.
-        myLibraryTable.getColumnModel().getColumn(0).setPreferredWidth(5);
+        updateTable(theTableData);
+        currentSongList = theTableData;
     }
 
+
+    // Update the table with search results
     private void updateTable(boolean wasSearched) {
         String[][] theTableData = myLibrary.toArray(wasSearched);
+        updateTable(theTableData);
+        currentSongList = theTableData;
+    }
+
+    // Update the table with a specific list of songs
+    private void updateTable(ArrayList<Song> songList) {
+        String[][] theTableData = new String[songList.size()][4];
+        for (int i = 0; i < songList.size(); i++) {theTableData[i][0] = i + 1 + "";
+            theTableData[i][1] = songList.get(i).getSongTitle();
+            theTableData[i][2] = songList.get(i).getSongArtist();
+            theTableData[i][3] = songList.get(i).getSongGenre();
+        }
+        updateTable(theTableData);
+        currentSongList = theTableData;
+    }
+
+    // Common method to update the JTable with given data
+    private void updateTable(String[][] theTableData) {
         String[] theColumnNames = {"", "Title", "Artist", "Genre"};
 
         // Create a new TableModel and update the JTable.
         myLibraryTable.setModel(new javax.swing.table.DefaultTableModel(theTableData, theColumnNames) {
-            @Override
-            public boolean isCellEditable(int theRow, int column) {
-                return false;
-            }
-        });
-
-        // Adjust column widths.
-        myLibraryTable.getColumnModel().getColumn(0).setPreferredWidth(5);
-    }
-
-    private void updateTable(ArrayList<Song> songList) {
-        String[][] newTable = new String[songList.size()][4];
-
-        for (int i = 0; i < songList.size(); i++) {
-            newTable[i][0] = i + 1 + "";
-            newTable[i][1] = songList.get(i).getSongTitle();
-            newTable[i][2] = songList.get(i).getSongArtist();
-            newTable[i][3] = songList.get(i).getSongGenre();
-        }
-
-        String[] theColumnNames = {"", "Title", "Artist", "Genre"};
-
-// Create a new TableModel and update the JTable.
-        myLibraryTable.setModel(new javax.swing.table.DefaultTableModel(newTable, theColumnNames) {
             @Override
             public boolean isCellEditable(int theRow, int column) {
                 return false;
