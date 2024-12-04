@@ -135,7 +135,9 @@ public class MusicPlayerGUI extends JFrame {
         returnToLibrary.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                myMusicPlayer.pauseSong();
                 updateTable();
+                myTableTitle.setText("Library");
 
             }
         });
