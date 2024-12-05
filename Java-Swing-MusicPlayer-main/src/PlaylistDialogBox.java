@@ -98,7 +98,7 @@ public class PlaylistDialogBox extends JDialog {
 
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setDialogTitle("Save Playlist");
-        fileChooser.setCurrentDirectory(new File("Java-Swing-MusicPlayer-main/src/assets/playlist"));
+        fileChooser.setCurrentDirectory(new File("src/assets/playlist"));
         fileChooser.setSelectedFile(new File(playlistName + ".txt")); // Default filename
 
         int userSelection = fileChooser.showSaveDialog(this);

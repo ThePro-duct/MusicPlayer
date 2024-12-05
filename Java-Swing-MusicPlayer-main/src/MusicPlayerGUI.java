@@ -192,7 +192,7 @@ public class MusicPlayerGUI extends JFrame {
         loadPlaylistItem.addActionListener(e -> {
             JFileChooser fileChooser = new JFileChooser();
             fileChooser.setDialogTitle("Load Playlist");
-            fileChooser.setCurrentDirectory(new File("Java-Swing-MusicPlayer-main/src/assets/playlist"));
+            fileChooser.setCurrentDirectory(new File("src/assets/playlist"));
 
             int userSelection = fileChooser.showOpenDialog(MusicPlayerGUI.this);
             if (userSelection == JFileChooser.APPROVE_OPTION) {
