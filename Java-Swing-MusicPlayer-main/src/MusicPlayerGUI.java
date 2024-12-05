@@ -72,17 +72,17 @@ public class MusicPlayerGUI extends JFrame {
         // Set the background color of the content pane.
         getContentPane().setBackground(FRAME_COLOR);
 
-        setIconImage(loadImage("Java-Swing-MusicPlayer-main/src/assets/icon.png").getImage());
+        setIconImage(loadImage("src/assets/icon.png").getImage());
 
         // Initialize the MusicPlayer and JFileChooser objects.
         myMusicPlayer = new MusicPlayer(this);
         myJFileChooser = new JFileChooser();
 
         // Set the default directory for the file chooser.
-        myJFileChooser.setCurrentDirectory(new File("Java-Swing-MusicPlayer-main/src/assets"));
+        myJFileChooser.setCurrentDirectory(new File("src/assets"));
 
         // Initialize the Library with the path to the song directory.
-        myLibrary = new Library("Java-Swing-MusicPlayer-main/src/assets/songs");
+        myLibrary = new Library("src/assets/songs");
 
         // Filter the file chooser to display only MP3 files.
         myJFileChooser.setFileFilter(new FileNameExtensionFilter("MP3", "mp3"));
@@ -306,7 +306,7 @@ public class MusicPlayerGUI extends JFrame {
         myPlaybackBtns.setBackground(null); // Set transparent background.
 
         // Previous button.
-        JButton prevButton = new JButton(loadImage("Java-Swing-MusicPlayer-main/src/assets/previous.png"));
+        JButton prevButton = new JButton(loadImage("src/assets/previous.png"));
         prevButton.setBorderPainted(false);
         prevButton.setBackground(null); // Set transparent background.
         prevButton.addActionListener(new ActionListener() {
@@ -318,7 +318,7 @@ public class MusicPlayerGUI extends JFrame {
         myPlaybackBtns.add(prevButton);
 
         // Play button.
-        JButton playButton = new JButton(loadImage("Java-Swing-MusicPlayer-main/src/assets/play.png"));
+        JButton playButton = new JButton(loadImage("src/assets/play.png"));
         playButton.setBorderPainted(false);
         playButton.setBackground(null); // Set transparent background.
         playButton.addActionListener(new ActionListener() {
@@ -331,7 +331,7 @@ public class MusicPlayerGUI extends JFrame {
         myPlaybackBtns.add(playButton);
 
         // Pause button (initially invisible).
-        JButton pauseButton = new JButton(loadImage("Java-Swing-MusicPlayer-main/src/assets/pause.png"));
+        JButton pauseButton = new JButton(loadImage("src/assets/pause.png"));
         pauseButton.setBorderPainted(false);
         pauseButton.setBackground(null); // Set transparent background.
         pauseButton.setVisible(false);
@@ -345,7 +345,7 @@ public class MusicPlayerGUI extends JFrame {
         myPlaybackBtns.add(pauseButton);
 
         // Next button.
-        JButton nextButton = new JButton(loadImage("Java-Swing-MusicPlayer-main/src/assets/next.png"));
+        JButton nextButton = new JButton(loadImage("src/assets/next.png"));
         nextButton.setBorderPainted(false);
         nextButton.setBackground(null); // Set transparent background.
         nextButton.addActionListener(new ActionListener() {

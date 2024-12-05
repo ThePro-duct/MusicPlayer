@@ -26,7 +26,7 @@ public class App {
      */
     public static void main(String[] theArgs) {
         // Initialize the music library with the path to the song directory.
-        Library myLibrary = new Library("Java-Swing-MusicPlayer-main/src/assets/songs");
+        Library myLibrary = new Library("src/assets/songs");
 
         // Use SwingUtilities.invokeLater to ensure GUI updates happen on the Event Dispatch Thread (EDT).
         SwingUtilities.invokeLater(new Runnable() {
