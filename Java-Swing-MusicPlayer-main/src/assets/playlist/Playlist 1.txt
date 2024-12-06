@@ -1,0 +1,9 @@
+src\assets\songs\A House Is Not a Home.mp3
+src\assets\songs\Auld Lang Syne (Instrumental) - Jingle Punks.mp3
+src\assets\songs\Black Hole Sun.mp3
+src\assets\songs\C418   Sweden  Minecraft Volume Alpha.mp3
+src\assets\songs\Do For Love.mp3
+src\assets\songs\Get It Together.mp3
+src\assets\songs\Karakuri Spirits (MEIKAI ARRANGE).mp3
+src\assets\songs\Man Who Sold The World 2023 Remaster.mp3
+src\assets\songs\Mystic.mp3

@@ -1,3 +1,0 @@
-Java-Swing-MusicPlayer-main\src\assets\songs\Piano Man Audio.mp3
-Java-Swing-MusicPlayer-main\src\assets\songs\Roundabout 2008 Remaster.mp3
-Java-Swing-MusicPlayer-main\src\assets\songs\The Battle At Austerlitz.mp3
