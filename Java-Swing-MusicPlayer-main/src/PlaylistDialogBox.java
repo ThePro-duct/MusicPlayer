@@ -44,33 +44,28 @@ public class PlaylistDialogBox extends JDialog {
         tableModel.addTableModelListener(new TableModelListener() {
             @Override
             public void tableChanged(TableModelEvent e) {
-                // Handle changes to the checkbox state here if needed
+                // Handle changes to the checkbox state
                 int row = e.getFirstRow();
                 int column = e.getColumn();
-                if (column == 0) { // Assuming the checkbox is in the first column
+                if (column == 0) { // Checkbox column
                     Boolean checked = (Boolean) tableModel.getValueAt(row, column);
-                    // Do something with the checked state, e.g., update a list of selected songs
                     System.out.println("Row " + row + " checkbox is " + (checked ? "selected" : "deselected"));
                 }
             }
         });
 
-        JScrollPane theScrollPane = new JScrollPane(playlistTable);
-        playlistTable.getColumnModel().getColumn(0).setPreferredWidth(5);
+        // Wrap the table in a JScrollPane
+        JScrollPane scrollPane = new JScrollPane(playlistTable);
+        scrollPane.setBounds((int) (getWidth() * 0.025), 10, (int) (getWidth() * 0.95), (int) (getHeight() * 0.75));
+        add(scrollPane);
 
-        // Set preferred width for the first column.
-        theScrollPane.setPreferredSize(new Dimension(300, 100));
-        playlistTable.setLayout(new BoxLayout(playlistTable, BoxLayout.Y_AXIS));
-        playlistTable.setBounds((int) (getWidth() * 0.025), 10, (int) (getWidth() * 0.90), (int) (getHeight() * 0.75));
-        add(playlistTable);
-
-        // add song button
+        // Playlist name input field
         JTextField playlistNameBox = new JTextField("Playlist Name Here...");
         playlistNameBox.setBounds(10, (int) (getHeight() * 0.80), 200, 25);
         playlistNameBox.setFont(new Font("Dialog", Font.PLAIN, 14));
         add(playlistNameBox);
 
-        // save playlist button
+        // Save playlist button
         JButton savePlaylistButton = new JButton("Save");
         savePlaylistButton.setBounds(215, (int) (getHeight() * 0.80), 100, 25);
         savePlaylistButton.setFont(new Font("Dialog", Font.BOLD, 14));
